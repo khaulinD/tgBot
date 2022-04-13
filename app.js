@@ -8,11 +8,19 @@ const options = {polling: true};
 const {gameOptions, againOptions, textSwapButton, stopSwap} = require('./expFile')
 const bot = new TelegramBot(token, options);
 //const exports = 
+const mongoose = require('mongoose')
+const db = require('./database')
+const {collection} = require('./database')
+const anyFunction = require('./function')
+const { foundInArray } = require('./function')
+const checkUsers = require('./database')
+
 const chats={};
 let boolForSwapRu =false;
 let boolForSwapUa =false;
 const timeHour = new Date().getHours()
 let boolForTime = false;
+
 
 function launch() {
 
@@ -122,9 +130,9 @@ let ans =  Math.floor(Math.random()*phrase.length)
 
 return bot.sendMessage(chatId, phrase[ans])
 }
-function music(chatId) {
+async function music(chatId) {
   let random=  Math.floor(Math.random()*10)
-  bot.sendMessage(chatId,`Может что-то по-типу етого?`)
+  await bot.sendMessage(chatId,`Может что-то по-типу етого?`)
 
   switch (random) {
     case 0:
@@ -175,8 +183,22 @@ function music(chatId) {
 
 //  boolForTime=true
 //   }
+let wordsArray = []
+bot.on('message', async (msg)=>{
+  const text = msg.text;
 
 
+  
+    if (text) {  
+     
+    anyFunction.foundInArray(text, wordsArray)  
+    wordsArray =Array.from(new Set(wordsArray));
+    console.log(wordsArray )
+  
+    }
+
+
+})
 
 bot.setMyCommands([
     {command: '/start', description:'start working' },
@@ -186,7 +208,7 @@ bot.setMyCommands([
     {command: '/music', description:'music choices' }
 ])
 bot.on('message', async (msg)=>{
-
+   
     const data = msg.data
     const text = msg.text;
     const chatId = msg.chat.id;
@@ -200,19 +222,30 @@ if (boolForTime!==true) {
 }
 
     if (text1=='/start') {
-        console.log(msg);
-      
-     fs.writeFile(filePath,'hello', err=>{
-       if (err) {throw err}
-       return true
-     })
+     
+       db.newUser(nameUser, wordsArray)
+       setInterval(async ()=> {
+     
+        if (db.checkUsers!=null) {
+          
+          try {
+
+          let doc = await collection.findOneAndUpdate({name:nameUser},{words:wordsArray},{returnOriginal:false})
+          console.log('basa update');
+          }
+          catch (e) {
+        
+            console.log(e.message);
+          }
+        }
+        else{
+          console.log('takogo nemae');
+        }
+        
+        },3600000)
     }
-    if (text) {
-fs.appendFile(filePath, `\n${text}`, (err)=>{
-    if (err) {throw err}
-    return true
-      })
-    }
+  
+
 if (text1=='/momot') {
  await humanReadable (chatId)
 }
@@ -277,12 +310,32 @@ bot.on('callback_query', async msg=>{ //game find num
        return startGame(chatId)  
     }
     if (data==chats[chatId]) {
+      toDataBaseWin()
     return  bot.sendMessage(chatId,`Ладно в той раз повезло`,againOptions)
+   
     }
     if(data!==chats[chatId] && data.length==1){
    return  bot.sendMessage(chatId,`Боже який ти камінь, правильне чысло: ${chats[chatId]}`,againOptions)
 }});
 }
+async function toDataBaseWin() {
+  console.log(db.checkUsers);
+  if (db.checkUsers!=null) {
+    try {
+   let win =  await collection.findOneAndUpdate({name:nameUser},{score:{win:win+1}},{returnOriginal:false})
+    console.log(win.score.win);
+    console.log('basa update');
+    }
+    catch (e) {
+  
+      console.log(e.message);
+    }
+  }
+  else{
+    console.log('takogo nemae');
+  }
+  
+  }
 
 
 launch()
