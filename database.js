@@ -7,7 +7,11 @@ require('dotenv').config();
 const uri = process.env.uriDatabase
 const { Schema } =mongoose;
 async function main(){
-    mongoose.connect(uri,{ useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 })
+
+    mongoose.connect(uri)
+
+
+
     console.log('vse ok');
 }
 main().catch(e=>console.log(e));
