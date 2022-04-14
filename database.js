@@ -7,7 +7,7 @@ require('dotenv').config();
 const uri = process.env.uriDatabase
 const { Schema } =mongoose;
 async function main(){
-    await mongoose.connect(uri)
+    await mongoose.connect('mongodb+srv://khaulin:WZvQOrTceNYnbmoW@cluster0.d77wc.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
     console.log('vse ok');
 }
 main().catch(e=>console.log(e));
