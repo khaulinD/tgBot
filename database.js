@@ -1,4 +1,8 @@
 const mongoose = require('mongoose')
+
+
+
+
 require('dotenv').config();
 const uri = process.env.uriDatabase
 const { Schema } =mongoose;
@@ -16,10 +20,10 @@ const userSchema = new Schema({
     }
 })
 const collection = mongoose.model('users', userSchema)
-module.exports.collection =collection
 
 async function newUser(nameUser, wordsArray){
-    const checkUsers =await collection.findOne({name:nameUser});
+    const checkUsers = await collection.findOne({name:nameUser});
+  
     
     if(checkUsers == null){
         let user = await collection.create({
@@ -31,11 +35,17 @@ async function newUser(nameUser, wordsArray){
               }
         })
      console.log(user.name);
+
     }
     else {
     console.log('vse isnue');
+
+
     }
-    module.exports.checkUsers = checkUsers
+  module.exports.checkUsers = checkUsers  
+    
 }
 
+
 module.exports.newUser= newUser;
+module.exports.collection =collection
