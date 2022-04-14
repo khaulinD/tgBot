@@ -18,15 +18,17 @@ const userSchema = new Schema({
     score:{
         loose:Number,
         win:Number
+
     }
 },{timestamps:true})
+
 const collection = mongoose.model('users', userSchema)
 
 async function newUser(nameUser, wordsArray){
     const checkUsers = await collection.findOne({name:nameUser});
   
     
-    if(checkUsers == null){
+    if(checkUsers==null){
         let user = await collection.create({
             name:nameUser,
             words:wordsArray,
