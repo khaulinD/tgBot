@@ -18,7 +18,8 @@ const userSchema = new Schema({
     score:{
         loose:Number,
         win:Number
-    }
+    },
+    {timestamp:true}
 })
 const collection = mongoose.model('users', userSchema)
 
