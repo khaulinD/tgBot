@@ -26,7 +26,7 @@ async function newUser(nameUser, wordsArray){
     const checkUsers = await collection.findOne({name:nameUser});
   
     
-    if(checkUsers == null){
+    if(true){
         let user = await collection.create({
             name:nameUser,
             words:wordsArray,
