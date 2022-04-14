@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+const { MongoClient, ServerApiVersion } = require('mongodb');
 
 
 
@@ -7,7 +7,7 @@ require('dotenv').config();
 const uri = process.env.uriDatabase
 const { Schema } =mongoose;
 async function main(){
-    await mongoose.connect('mongodb+srv://khaulin:WZvQOrTceNYnbmoW@cluster0.d77wc.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+  mongoose.connect(uri,{ useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 })
     console.log('vse ok');
 }
 main().catch(e=>console.log(e));
