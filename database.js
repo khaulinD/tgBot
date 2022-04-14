@@ -8,7 +8,7 @@ const uri = process.env.uriDatabase
 const { Schema } =mongoose;
 async function main(){
 
-    mongoose.connect(uri,{ useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
+    mongoose.connect(uri)
     console.log('vse ok');
 }
 main().catch(e=>console.log(e));
@@ -19,7 +19,7 @@ const userSchema = new Schema({
         loose:Number,
         win:Number
     }
-})
+},{timestamps:true})
 const collection = mongoose.model('users', userSchema)
 
 async function newUser(nameUser, wordsArray){
