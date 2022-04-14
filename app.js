@@ -195,7 +195,8 @@ async function music(chatId) {
 
 //  boolForTime=true
 //   }
-let wordsArray = []
+let wordsArray = [];
+module.exports.wordsArray= wordsArray;
 bot.on('message', async (msg)=>{
   const text = msg.text;
     if (text) {     

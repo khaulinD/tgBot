@@ -1,6 +1,7 @@
 const db = require('./database.js')
 const { collection } = require('./database')
-
+const {newUser}= require('./database')
+const wordsArray = require('./app')
 async function foundInArray(text, wordsArray){
     if (text!='/start', '/game', '/translate', '/momot', '/music') {
         wordsArray.push(text);
@@ -26,7 +27,10 @@ async function toDataBaseWin(nameUser,numWin,numLoose) {
       }
     }
     else{
-      console.log('takogo nemae');
+    
+      try {db.newUser(nameUser, wordsArray)}
+      catch (e) {console.log(e)}
+      console.log('takogo nemaeeeeeee');
     }
     
     }
