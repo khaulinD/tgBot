@@ -9,9 +9,6 @@ const { Schema } =mongoose;
 async function main(){
 
     mongoose.connect(uri)
-
-
-
     console.log('vse ok');
 }
 main().catch(e=>console.log(e));
