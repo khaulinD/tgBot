@@ -8,7 +8,9 @@ const uri = process.env.uriDatabase
 const { Schema } =mongoose;
 async function main(){
 
-    mongoose.connect(uri)
+    mongoose.connect(uri,
+         {useNewUrlParser: true ,
+        useUnifiedTopology: true});
     console.log('vse ok');
 }
 main().catch(e=>console.log(e));
@@ -18,7 +20,6 @@ const userSchema = new Schema({
     score:{
         loose:Number,
         win:Number
-
     }
 },{timestamps:true})
 
