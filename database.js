@@ -22,20 +22,25 @@ const userSchema = new Schema({
         win:Number
     }
 },{timestamps:true})
+const messageSchema = new Schema({
+    name:String,
+    text:String,
+    textId:Number
+},{timestamps:true})
 
-const collection = mongoose.model('users', userSchema)
+const userCollection = mongoose.model('users', userSchema)
 
 async function newUser(nameUser, wordsArray){
-    const checkUsers = await collection.findOne({name:nameUser});
-  
+    const checkUsers = await userCollection.findOne({name:nameUser});
+  const numWin =0
     
     if(checkUsers==null){
-        let user = await collection.create({
+        let user = await userCollection.create({
             name:nameUser,
             words:wordsArray,
             score:{
-                loose:0,
-                win:0
+                loose:numWin,
+                win:numWin
               }
         })
      console.log(user.name);
@@ -46,10 +51,18 @@ async function newUser(nameUser, wordsArray){
 
 
     }
-  module.exports.checkUsers = checkUsers  
+  module.exports={
+      checkUsers: checkUsers,
+      numWin:numWin
+
+     
+ } 
     
 }
 
-
-module.exports.newUser= newUser;
-module.exports.collection =collection
+module.exports={
+    newUser: newUser,
+    messageSchema:messageSchema,
+    userCollection : userCollection
+  
+}

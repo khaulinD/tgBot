@@ -8,10 +8,10 @@ const path = require('path');
 const options = {polling: true};
 const {gameOptions, againOptions, textSwapButton, stopSwap} = require('./expFile')
 const bot = new TelegramBot(token, options);
-const {toDataBaseWin,foundInArray} = require('./function')
+const {toDataBaseLoose,toDataBaseWin,foundInArray} = require('./function')
 const mongoose = require('mongoose')
 const db = require('./database')
-const { collection } = require('./database')
+const { userCollection, messageSchema } = require('./database')
 const anyFunction = require('./function')
 //const { foundInArray } = require('./function')
 //const { checkUsers } = require('./database')
@@ -206,7 +206,15 @@ bot.on('message', async (msg)=>{
     console.log(wordsArray)
     }
 })
-
+async function msgRemember(nameUser,text, textID, msgCollection){
+  const nameMessangera = new msgCollection({
+       name:nameUser,
+       text:text,
+       textId:textID
+  })
+ await
+  nameMessangera.save().then(()=>console.log('vot sozdav'))
+}
 bot.setMyCommands([
     {command: '/start', description:'start working' },
     {command: '/game', description:'!try found number!'},
@@ -215,7 +223,7 @@ bot.setMyCommands([
     {command: '/music', description:'music choices' }
 ])
 bot.on('message', async (msg)=>{
- 
+    const textID = msg.message_id
     const data = msg.data
     const text = msg.text;
     const chatId = msg.chat.id;
@@ -223,38 +231,23 @@ bot.on('message', async (msg)=>{
     const nameUser = msg.from.first_name;
     const filePath = path.join(__dirname,'usersText', `${nameUser}.txt`)
 let text1 = text.toLowerCase().replace('?','')
-if (boolForTime!==true) {
-//  goodNight(chatId)
- // boolForTime=true
-}
+const msgCollection = mongoose.model(nameUser, messageSchema)
+  if(text1!='/start'&&text1!='/game'&&text1!='/momot'&&text1!='/translate'&&text1!='/music'){
+    msgRemember(nameUser,text, textID,msgCollection)
+  }
 
-    if (text1=='/start') {
-    
-       db.newUser(nameUser, wordsArray)
-      
-       setInterval(async ()=> {
-        if (db.checkUsers!=null) {
-          try {
-          await collection.findOneAndUpdate({name:nameUser},{words:wordsArray},{returnOriginal:false})
-          console.log('basa update');
-          }
-          catch (e) {
-            console.log(e.message);
-          }
-        }
-        else{
-          console.log('takogo nemae');
-          try {db.newUser(nameUser, wordsArray)}
-          catch (e) {console.log(e)}
-        }},3600000)
+    if (text1=='/start') { 
+   db.newUser(nameUser, wordsArray)
+ 
 
     setInterval(async()=>{
       if (timeHour >= 23 && timeHour <=24) {
         goodNight(chatId)
       }
-      if (timeHour >= 8 && timeHour <=9) {
+      else if (timeHour >= 8 && timeHour <=9) {
         goodMorning(chatId)
       }
+      else(console.log('she ne chas '+new Date() ))
       
     },3600000)
 
@@ -319,8 +312,7 @@ bot.on('callback_query', async msg=>{
             boolForSwapRu= false;
           }
 })
-let numLoose =0;
-let numWin = 0;
+
 bot.on('callback_query', async msg=>{ //game find num
     
     const text1 = msg.text;
@@ -331,14 +323,12 @@ bot.on('callback_query', async msg=>{ //game find num
        return startGame(chatId)  
     }
     if (data==chats[chatId]) {
-    numWin++
-     await toDataBaseWin(nameUser,numWin,numLoose)
+     await toDataBaseWin(nameUser)
     return  bot.sendMessage(chatId,`Ладно в той раз повезло`,againOptions)
    
     }
     if(data!==chats[chatId] && data.length==1){
-      numLoose++
-     await toDataBaseWin(nameUser,numWin,numLoose)
+     await toDataBaseLoose(nameUser)
    return  bot.sendMessage(chatId,`Боже який ти камінь, правильне чысло: ${chats[chatId]}`,againOptions)
 }});
 }
