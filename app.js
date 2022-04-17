@@ -233,23 +233,26 @@ bot.on('message', async (msg)=>{
 let text1 = text.toLowerCase().replace('?','')
 const msgCollection = mongoose.model(nameUser, messageSchema)
   if(text1!='/start'&&text1!='/game'&&text1!='/momot'&&text1!='/translate'&&text1!='/music'){
-    msgRemember(nameUser,text, textID,msgCollection)
+    msgRemember(nameUser,text, textID, msgCollection)
   }
 
     if (text1=='/start') { 
    db.newUser(nameUser, wordsArray)
  
 
-    setInterval(async()=>{
+    setInterval(()=>{
       if (timeHour >= 23 && timeHour <=24) {
         goodNight(chatId)
       }
-      else if (timeHour >= 8 && timeHour <=9) {
+      if (timeHour >= 8 && timeHour <=9) {
+        goodMorning(chatId)
+      }
+      if (timeHour >= 19 && timeHour <=20) {
         goodMorning(chatId)
       }
       else(console.log('she ne chas '+new Date() ))
       
-    },3600000)
+    },1800000)
 
 
 
